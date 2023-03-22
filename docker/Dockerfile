@@ -23,22 +23,6 @@ RUN conda config --add channels conda-forge
 RUN conda install multiqc
 
 WORKDIR /tmp
-RUN wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.36.zip
-RUN unzip Trimmomatic-0.36.zip
-ENV TRIMMOMATIC /tmp/Trimmomatic-0.36/trimmomatic-0.36.jar
-
-
-RUN wget https://github.com/pachterlab/kallisto/releases/download/v0.45.0/kallisto_linux-v0.45.0.tar.gz
-RUN tar zxvf kallisto_linux-v0.45.0.tar.gz
-RUN ln -s /tmp/kallisto_linux-v0.45.0/kallisto /usr/bin/
-
-RUN wget https://github.com/deweylab/RSEM/archive/v1.3.1.tar.gz
-RUN tar zxvf v1.3.1.tar.gz
-WORKDIR RSEM-1.3.1 
-RUN make
-RUN make install 
-
-WORKDIR /tmp
 RUN wget https://github.com/COMBINE-lab/salmon/releases/download/v1.2.1/salmon-1.2.1_linux_x86_64.tar.gz
 RUN ls
 RUN tar xvzf salmon-1.2.1_linux_x86_64.tar.gz
@@ -46,13 +30,6 @@ RUN tar xvzf salmon-1.2.1_linux_x86_64.tar.gz
 RUN chmod +x /tmp/salmon-latest_linux_x86_64/bin/salmon
 RUN ln -s /tmp/salmon-latest_linux_x86_64/bin/salmon /usr/bin
 
-COPY hisat2-2.2.1-Linux_x86_64.zip /tmp
-RUN unzip hisat2-2.2.1-Linux_x86_64.zip
-RUN ln -s /tmp/hisat2-2.2.1/hisat2 /usr/bin
-RUN ln -s /tmp/hisat2-2.2.1/hisat2-build /usr/bin
-RUN wget --no-check-certificate -O  subread.tar.gz https://sourceforge.net/projects/subread/files/subread-2.0.3/subread-2.0.3-Linux-x86_64.tar.gz/download
-RUN tar zxvf subread.tar.gz
-RUN ln -s /tmp/subread-2.0.3-Linux-x86_64/bin/* /usr/bin
 
 
 
@@ -159,7 +136,8 @@ RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-ubunt
 
 
 ENV NXF_SINGULARITY_CACHEDIR=/home/dcuser/rnaseq_data/singularity-cache
-WORKDIR /home/dcuser/
+WORKDIR /home/dcuser/rnaseq_data
+RUN salmon index -i index/GRCh38_salmon -t ref_data/Homo_sapiens.GRCh38.cdna.chr22.fa
 #ENV HOME=/home/dcuser
 ## build command
 ##docker build -t="sheffieldbioinformatics/unix-training ."

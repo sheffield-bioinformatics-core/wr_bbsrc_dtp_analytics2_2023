@@ -15,7 +15,12 @@ knitr::opts_chunk$set(echo = TRUE,eval=FALSE)
 
 # Next steps in the pipeline
 
-Once we are happy with the QC or our data, the next steps in an NGS analysis is usually to align your samples to a reference genome
+Once we are happy with the QC or our data, the next steps in an NGS analysis is usually to align your samples to a reference genome. We have supplied a couple of required files in the `/home/dcuser/rnaseq_data/ref_data` folder.
+
+```{}
+ls /home/dcuser/rnaseq_data/ref_data
+```
+
 
 ## Obtaining reference data
 
@@ -42,7 +47,7 @@ Files can be downloaded by clicking on the relevant link. However, we want to do
 
 ## Exercise
 <div class="exercise">
-We will also need the Human reference genome sequence for chromosome 22. Download the repeat-masked (`rm`) version of this sequence to the `ref_data` folder.
+We will need the Human reference genome sequence for chromosome 22. Download the repeat-masked (`rm`) version of this sequence to the `ref_data` folder.
 
 </div>
 
@@ -60,7 +65,11 @@ aws-igenomes.sh
 
 </div>
 
+## Alignment of NGS data
 
+The general procedure of aligning of our sequencing reads is shown below
+
+<img src="https://training.galaxyproject.org/training-material/topics/sequence-analysis/images/mapping/mapping.png"/>
 
 # Why do we need a pipeline? How might we create one?
 

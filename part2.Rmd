@@ -401,3 +401,4 @@ Discuss your results with a neighbour.
 - Which sample(s) looks the best in terms of per base sequence quality? - Which sample(s) look the worst?
 </div>
 
+<a href="part3.nb.html" style="font-size: 50px; text-decoration: none">Click Here for next part</a>
