@@ -64,8 +64,6 @@ RUN apt-get update && apt-get install -y software-properties-common sudo && \
     echo oracle-java17-installer shared/accepted-oracle-license-v1-3 select true | sudo /usr/bin/debconf-set-selections && \
     apt-get install -y oracle-java17-installer && \
     apt install oracle-java17-set-default
-RUN curl -s https://get.nextflow.io | bash
-RUN ln -s /tmp/nextflow /usr/bin
 
 
 ## install singularity
@@ -97,30 +95,6 @@ WORKDIR /home
 
 ## Download nf.core cache images to make workflow quicker
 
-RUN mkdir singularity-cache
-RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-fastqc-0.11.9--0.img https://depot.galaxyproject.org/singularity/fastqc:0.11.9--0
-RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-bioconductor-summarizedexperiment-1.20.0--r40_0.img https://depot.galaxyproject.org/singularity/bioconductor-summarizedexperiment:1.20.0--r40_0
-RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-bioconductor-tximeta-1.8.0--r40_0.img https://depot.galaxyproject.org/singularity/bioconductor-tximeta:1.8.0--r40_0
-RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-multiqc-1.11--pyhdfd78af_0.img https://depot.galaxyproject.org/singularity/multiqc:1.11--pyhdfd78af_0
-RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-perl-5.26.2.img https://depot.galaxyproject.org/singularity/perl:5.26.2
-RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-python-3.9--1.img https://depot.galaxyproject.org/singularity/python:3.9--1
-RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-salmon-1.5.2--h84f40af_0.img https://depot.galaxyproject.org/singularity/salmon:1.5.2--h84f40af_0
-RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-samtools-1.15.1--h1170115_0.img https://depot.galaxyproject.org/singularity/samtools:1.15.1--h1170115_0
-RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-ubuntu-20.04.img https://depot.galaxyproject.org/singularity/ubuntu:20.04
-#RUN singularity pull singularity-cache/singularity-cache/depot.galaxyproject.org-singularity-mulled-v2-8849acf39a43cdd6c839a369a74c0adc823e2f91-ab110436faf952a33575c64dd74615a84011450b-0.img https://depot.galaxyproject.org/singularity/mulled:v2-8849acf39a43cdd6c839a369a74c0adc823e2f91-ab110436faf952a33575c64dd74615a84011450b-0
-
-
-ENV NXF_SINGULARITY_CACHEDIR=/home/singularity-cache
-
-RUN mkdir /data
-WORKDIR /data
-
-RUN mkdir /data/ref_data
-COPY Homo_sapiens.GRCh38.cdna.chr22.fa /data/ref_data
-COPY Homo_sapiens.GRCh38.108.chr22.gtf  /data/ref_data
-
-
-
 WORKDIR /tmp
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 RUN unzip awscliv2.zip
@@ -128,16 +102,7 @@ RUN sudo ./aws/install
 RUN curl -fsSL https://ewels.github.io/AWS-iGenomes/aws-igenomes.sh > /usr/bin/aws-igenomes.sh
 RUN chmod +x /usr/bin/aws-igenomes.sh
 
-WORKDIR /data
 
-
-RUN mkdir /data/scripts
-RUN mkdir /data/fastq
-COPY nf_samplesheet.csv /data/
-COPY fastq/*_sub.fastq.gz /data/fastq/
-COPY scripts/* /data/scripts/
-RUN dos2unix scripts/get_ref_for_nextflow.sh
-RUN dos2unix scripts/run_nextflow.sh
 
 RUN useradd dcuser -m -d /home/dcuser -G sudo -s /bin/bash
 RUN chown dcuser /home/dcuser
@@ -152,20 +117,50 @@ WORKDIR /home/dcuser/shell_data
 RUN unzip dc_sample_data.zip
 RUN rm dc_sample_data.zip
 
+WORKDIR /home/dcuser/rnaseq_data/
+
+
+RUN mkdir /home/dcuser/rnaseq_data/scripts
+RUN mkdir /home/dcuser/rnaseq_data/fastq
+RUN mkdir /home/dcuser/rnaseq_data/ref_data
+COPY nf_samplesheet.csv /home/dcuser/rnaseq_data/
+COPY fastq/*_sub.fastq.gz /home/dcuser/rnaseq_data//fastq/
+COPY scripts/* /home/dcuser/rnaseq_data/scripts/
+RUN dos2unix -n scripts/get_ref_for_nextflow.sh scripts/get_ref_for_nextflow2.sh
+RUN mv scripts/get_ref_for_nextflow2.sh scripts/get_ref_for_nextflow.sh
+RUN dos2unix -n scripts/run_nextflow.sh scripts/run_nextflow2.sh
+RUN mv scripts/run_nextflow2.sh scripts/run_nextflow.sh
+COPY Homo_sapiens.GRCh38.cdna.chr22.fa /home/dcuser/rnaseq_data/ref_data
+COPY Homo_sapiens.GRCh38.108.chr22.gtf  /home/dcuser/rnaseq_data/ref_data
 
 #RUN wget https://ndownloader.figshare.com/articles/3219673?private_link=f5d63d8c265a05618137 -O fastq.zip
 
 #RUN unzip fastq.zip -d /home/dcuser/rnaseq_data/
 #RUN rm fastq.zip
 #RUN rm /home/dcuser/rnaseq_data/chr1*
+
 #RUN rm /home/dcuser/rnaseq_data/targets2.txt
 
-COPY downsampled_fastq.zip /home/dcuser/rnaseq_data
 WORKDIR /home/dcuser/rnaseq_data
+RUN curl -s https://get.nextflow.io | bash
+RUN chmod +x /home/dcuser/rnaseq_data/nextflow
 
-RUN unzip downsampled_fastq.zip
-RUN rm downsampled_fastq.zip
+RUN mkdir /home/dcuser/rnaseq_data/singularity-cache
+RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-fastqc-0.11.9--0.img https://depot.galaxyproject.org/singularity/fastqc:0.11.9--0
+RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-bioconductor-summarizedexperiment-1.20.0--r40_0.img https://depot.galaxyproject.org/singularity/bioconductor-summarizedexperiment:1.20.0--r40_0
+RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-bioconductor-tximeta-1.8.0--r40_0.img https://depot.galaxyproject.org/singularity/bioconductor-tximeta:1.8.0--r40_0
+RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-multiqc-1.11--pyhdfd78af_0.img https://depot.galaxyproject.org/singularity/multiqc:1.11--pyhdfd78af_0
+RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-perl-5.26.2.img https://depot.galaxyproject.org/singularity/perl:5.26.2
+RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-python-3.9--1.img https://depot.galaxyproject.org/singularity/python:3.9--1
+RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-salmon-1.5.2--h84f40af_0.img https://depot.galaxyproject.org/singularity/salmon:1.5.2--h84f40af_0
+RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-samtools-1.15.1--h1170115_0.img https://depot.galaxyproject.org/singularity/samtools:1.15.1--h1170115_0
+RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-ubuntu-20.04.img https://depot.galaxyproject.org/singularity/ubuntu:20.04
+#RUN singularity pull singularity-cache/singularity-cache/depot.galaxyproject.org-singularity-mulled-v2-8849acf39a43cdd6c839a369a74c0adc823e2f91-ab110436faf952a33575c64dd74615a84011450b-0.img https://depot.galaxyproject.org/singularity/mulled:v2-8849acf39a43cdd6c839a369a74c0adc823e2f91-ab110436faf952a33575c64dd74615a84011450b-0
 
+
+ENV NXF_SINGULARITY_CACHEDIR=/home/dcuser/rnaseq_data/singularity-cache
+WORKDIR /home/dcuser/
+#ENV HOME=/home/dcuser
 ## build command
 ##docker build -t="sheffieldbioinformatics/unix-training ."
 

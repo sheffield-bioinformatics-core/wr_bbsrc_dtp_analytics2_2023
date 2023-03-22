@@ -13,6 +13,55 @@ output:
 knitr::opts_chunk$set(echo = TRUE,eval=FALSE)
 ```
 
+# Next steps in the pipeline
+
+Once we are happy with the QC or our data, the next steps in an NGS analysis is usually to align your samples to a reference genome
+
+## Obtaining reference data
+
+Links to downloads for a variety of different organisms can be found at https://www.ensembl.org/info/data/ftp/index.html. We can navigate to the particular organism we are interested in through the interface and download the transcript and genome sequences to our laptop. 
+
+<div class="information">
+If you are running this workshop in-person using the cloud-based environment, make sure to use web-browse within the environment to access the Ensembl FTP site.
+</div>
+
+The command `wget` can be used to download a file from an FTP site to a local directory if you know the path to the file (URL). This path could be obtained by first locating the file in Ensembl and right-clicking to copy the link address.
+
+The homepage of Ensembl FTP index links to reference data for common genomes
+
+<img src="images/ensembl_download.png"/>
+
+Files can be downloaded by clicking on the relevant link. However, we want to download the data using the command line so we have to right-click and select "Copy Link Location" (or similar)
+
+<img src="images/cdna_download.png"/>
+
+
+<div class="information">
+*To avoid duplication. check first (with I.T or local Bioinformaticians) that you don't have a local copy of reference genomes on your file system*
+</div>
+
+## Exercise
+<div class="exercise">
+We will also need the Human reference genome sequence for chromosome 22. Download the repeat-masked (`rm`) version of this sequence to the `ref_data` folder.
+
+</div>
+
+
+<div class="information">
+We also recommend obtaining reference genomes from the AWS iGenomes project
+
+- [https://ewels.github.io/AWS-iGenomes/](https://ewels.github.io/AWS-iGenomes/)
+
+This project provides a stable and versioned resource for obtaining many reference genomes. Moreover, it has a convenient command-based interface for downloading the genomes. As it is capable of downloading large volumes of data we will not be using it in the workshop.
+
+```
+aws-igenomes.sh
+```
+
+</div>
+
+
+
 # Why do we need a pipeline? How might we create one?
 
 We have now learnt a few commands that, when joined together, can form the basis for a minimal analysis pipeline
@@ -75,7 +124,7 @@ As we have discussed, there are a number of options to extend our pipeline to mu
 
 - As pipeline steps have to be re-run in sequence; even if the initial pipeline steps ran sucessfully they will still be re-run every time
 - There is no error-checking. 
-- The pipeline will not neccesarily run on another environment as it will assume that the `fastqc`, `multiqc` and `salmon` tools can be found.
+- The pipeline will not neccesarily run on another environment as it will assume that the `fastqc`, `multiqc` and other tools can be found.
 
 None of these issues are impossible to solve, but this isn't intended to be a workshop on software development best-practice. 
 

@@ -1,4 +1,4 @@
-nextflow run nf-core/rnaseq -profile singularity \
+./nextflow run nf-core/rnaseq -profile singularity \
 -r 3.8.1 \
 --skip_alignment \
 --skip_trimming \
@@ -7,7 +7,6 @@ nextflow run nf-core/rnaseq -profile singularity \
 --fasta ref_data/Homo_sapiens.GRCh38.dna_rm.chromosome.22.fa \
 --transcript_fasta ref_data/Homo_sapiens.GRCh38.cdna.chr22.fa \
 --gtf ref_data/Homo_sapiens.GRCh38.108.chr22.gtf \
---salmon_index index/GRCh38_salmon \
 --outdir nf_results \
 --max_memory 2GB \
 --max_cpus 2
