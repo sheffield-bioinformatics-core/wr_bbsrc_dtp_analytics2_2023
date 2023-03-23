@@ -138,6 +138,9 @@ RUN singularity pull singularity-cache/depot.galaxyproject.org-singularity-ubunt
 ENV NXF_SINGULARITY_CACHEDIR=/home/dcuser/rnaseq_data/singularity-cache
 WORKDIR /home/dcuser/rnaseq_data
 RUN salmon index -i index/GRCh38_salmon -t ref_data/Homo_sapiens.GRCh38.cdna.chr22.fa
+
+WORKDIR /home/dcuser/
+
 #ENV HOME=/home/dcuser
 ## build command
 ##docker build -t="sheffieldbioinformatics/unix-training ."

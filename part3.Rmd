@@ -1,5 +1,5 @@
 ---
-title: "Workflows, Pipeline and Workflow Managers"
+title: "Intro to Workflows, Pipelines and Workflow Managers"
 author: "Mark Dunning"
 date: '`r format(Sys.time(), "Last modified: %d %b %Y")`'
 output:
@@ -67,9 +67,25 @@ aws-igenomes.sh
 
 ## Alignment of NGS data
 
-The general procedure of aligning of our sequencing reads is shown below
+The general procedure of aligning of our sequencing reads is illustrated below:-
 
 <img src="https://training.galaxyproject.org/training-material/topics/sequence-analysis/images/mapping/mapping.png"/>
+
+There are numerous tools available for aligning sequencing reads, and main consideration is the type of sequencing experiement being performed (e.g. DNA-seq vs RNA-seq etc). Each tool also requires you to build an **index** from the genome reference file.
+
+Or recommended tool for RNA-seq is `salmon` and the particular command for one sample is:-
+
+```{bash}
+salmon quant -i index/GRCh38_salmon --libType A -r fastq/ERR732901_sub.fastq.gz -o quant/ERR732901
+```
+
+Where 
+
+- `fastq/ERR732901_sub.fastq.gz ` contains the data for the particular biological sample
+- `index/GRCh38_salmon` contains the processed reference genome
+- `quant/ERR732901` is where we want to output to be created
+- `libType A` is a specific argument for salmon specifying what type of RNA-seq has been performed.
+
 
 # Why do we need a pipeline? How might we create one?
 
@@ -77,8 +93,7 @@ We have now learnt a few commands that, when joined together, can form the basis
 
 - use `fastqc` to create QC reports for each sample
 - use `multiqc` to combine the QC
-- index a reference transcriptome using `salmon`
-- produce a set of quantified genes using `salmon`
+- align our data using `salmon`
 
 The next natural step would be to record these commands in a *script* so that we can document our analysis and re-run as required. We don't usually have a text editor in our Unix environment, so it is good practice to create and edit the script using the command-line. The `nano` editor is commonly-found on Unix systems and running the command `nano` with a file name will create that file if it does not exist.
 
@@ -107,14 +122,12 @@ ls -l
 bash analysis_script.sh
 ```
 
-This will run through the QC steps of the pipeline. The next stage would be to add the steps for `salmon` quantification. Since we want the ability to re-run the whole pipeline from scratch if required, we need to add the step to create the salmon index
+This will run through the QC steps of the pipeline. The next stage would be to add the steps for `salmon` quantification.
 
 ```{bash}
-salmon index -i index/GRCh38_salmon -t ref_data/Homo_sapiens.GRCh38.cdna.chr22.fa
 salmon quant -i index/GRCh38_salmon --libType A -r fastq/ERR732901_sub.fastq.gz -o quant/ERR732901
 ```
 
-Our pipeline is already quite short and is running on a small dataset, but already it is taking a little while to run. The pipeline has been written in a linear fashion, so that each step must be completed in order. If our salmon alignment code needed to be changed we would have to re-run all the QC. This is not a huge problem here, but could be quite inefficient for a more-realistic dataset.
 
 We also have a number of options for how to proceed with quantifying the remaining samples. The simplest approach copy-and-paste the `salmon quant` line with different sample names
 
@@ -125,17 +138,90 @@ salmon quant -i index/GRCh38_salmon --libType A -r fastq/ERR732903_sub.fastq.gz 
 
 ```
 
-This is not particularly satisfactory as it is prone to typo errors. An alternative might be to employ a *for loop*, which you might have [come across previously](https://datacarpentry.org/shell-genomics/04-redirection/index.html). Ultimately, we will not do either as we are going to use a specific type of program for running our pipeline.
+This is not particularly satisfactory as it is prone to typo errors. Our pipeline is already quite short and is running on a small dataset, but already it is taking a little while to run. The pipeline has been written in a linear fashion, so that each step must be completed in order. If our salmon alignment code needed to be changed we would have to re-run all the QC. This is not a huge problem here, but could be quite inefficient for a more-realistic dataset.
+
+
+The order in which our various tools are being run can be visualised as follows:- 
+
+```{r echo=FALSE}
+library(tidyverse)  # for %>% pipes
+library(DiagrammeR)
+library(DiagrammeRsvg)  # for conversion to svg
+library(rsvg)  # for saving svg
+
+
+g <- grViz(diagram = "digraph flowchart {
+      # define node aesthetics
+      node [fontname = Arial, shape = oval, color = '#9ADBE8', style = filled, fontsize =20]  
+      edge [color = '#440099', penwidth=3]
+      
+      node [fillcolor = '#9ADBE8']
+      
+      tab2 [label = 'fastQC']
+      tab3 [label = 'multiQC']
+      tab4 [label = 'salmon align Sample 1']
+      tab5 [label = 'salmon align Sample 2']
+      tab6 [label = 'salmon align Sample ....']
+      
+      tab2 -> tab3;
+      tab3 -> tab4;
+      tab4 -> tab5;
+      tab5 -> tab6;
+
+}")
+
+g
+g %>% 
+  export_svg() %>% 
+  charToRaw %>% 
+  rsvg_png("images/flowchart1.png")
+
+```
+![](images/flowchart1.png)
+
+An alternative might be to employ a *for loop*, which you might have [come across previously](https://datacarpentry.org/shell-genomics/04-redirection/index.html). This will make our code more efficient, but still not help with running our analysis in an efficient manner. 
+
+There is no particular reason why we should wait for Sample 1 to be processed before Sample 2 and Sample 2 before Sample 3 etc. Ideally, we would want to process all our samples at the same time. This is achievable is we run our analysis where we have several processors available; such as a *HPC* (High-Performance Computer) or computing cluster.
+
+```{r echo=FALSE}
+g <- grViz(diagram = "digraph flowchart {
+      # define node aesthetics
+      node [fontname = Arial, shape = oval, color = '#9ADBE8', style = filled, fontsize =20]  
+      edge [color = '#440099', penwidth=3]
+      
+      node [fillcolor = '#9ADBE8']
+      
+      tab2 [label = 'fastQC']
+      tab3 [label = 'multiQC']
+      tab4 [label = 'salmon align Sample 1']
+      tab5 [label = 'salmon align Sample 2']
+      tab6 [label = 'salmon align Sample ....']
+      
+      tab2 -> tab3;
+      tab3 -> tab4;
+      tab3 -> tab5;
+      tab3 -> tab6;
+
+}")
+
+g
+g %>% 
+  export_svg() %>% 
+  charToRaw %>% 
+  rsvg_png("images/flowchart2.png")
+
+```
+
+![](images/flowchart2.png)
 
 # Why do we need a workflow manager
 
 As we have discussed, there are a number of options to extend our pipeline to multiple samples. These require more programming knowledge than we might be comfortable with. There are a few other issues with the script that we have created.
 
 - As pipeline steps have to be re-run in sequence; even if the initial pipeline steps ran sucessfully they will still be re-run every time
-- There is no error-checking. 
 - The pipeline will not neccesarily run on another environment as it will assume that the `fastqc`, `multiqc` and other tools can be found.
 
-None of these issues are impossible to solve, but this isn't intended to be a workshop on software development best-practice. 
+Neither of these issues are impossible to solve, but this isn't intended to be a workshop on software development best-practice. 
 
 **In reality, we would recommend people re-using existing analysis pipelines rather than writing their own**. We will look at an example using the nextflow workflow manager, although similar tools such as snakemake are also popular in Bioinformatics
 
@@ -190,7 +276,6 @@ The particular steps that we have modified are as follows:-
 --fasta ref_data/Homo_sapiens.GRCh38.dna_rm.chromosome.22.fa \
 --transcript_fasta ref_data/Homo_sapiens.GRCh38.cdna.chr22.fa \
 --gtf ref_data/Homo_sapiens.GRCh38.108.chr22.gtf \
---salmon_index index/GRCh38_salmon \
 ## restrict the amount of memory requested \
 --max_memory 2GB
 ```
