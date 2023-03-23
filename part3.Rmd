@@ -41,14 +41,16 @@ Files can be downloaded by clicking on the relevant link. However, we want to do
 <img src="images/cdna_download.png"/>
 
 
-<div class="information">
-*To avoid duplication. check first (with I.T or local Bioinformaticians) that you don't have a local copy of reference genomes on your file system*
-</div>
+
 
 ## Exercise
 <div class="exercise">
-We will need the Human reference genome sequence for chromosome 22. Download the repeat-masked (`rm`) version of this sequence to the `ref_data` folder.
+We will need the Human reference genome sequence for chromosome 22 from the DNA (FASTA) section. Download the repeat-masked (`rm`) version of this sequence to the `ref_data` folder, and extract the contents of the file using `gzip`.
 
+</div>
+
+<div class="information">
+*To avoid duplication. check first (with I.T or local Bioinformaticians) that you don't have a local copy of reference genomes on your file system*
 </div>
 
 
