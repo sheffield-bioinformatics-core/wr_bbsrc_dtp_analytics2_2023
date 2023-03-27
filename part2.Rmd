@@ -204,7 +204,7 @@ md5sum fastq/Sample1/Sample1_sub.fastq
 
 
 
-##  Obtaining public data
+##  Obtaining public data and About the example data
 
 A good resource for obtaining public data is the SRA explorer.
 
@@ -232,6 +232,14 @@ For this particular dataset we created a download script using the links provide
 <div class="information">
 The code used to download the example dataset can be found in `/home/dcuser/rnaseq_data/scripts/download_subset.sh`. You do not need to run this as part of the workshop - it is just for information, or if you wanted to repeat the workshop in your own environment.
 </div>
+
+The example dataset consists of nine raw (fastq files). The files are named according to names assigned when the data were uploaded to the public repository. We can use a sample sheet to associate each of these database names to something more memorable, and eventually the biological conditions being studied (beyond the scope of what we will cover today)
+
+| fastq     | Sample | Condition   |
+|-----------|--------|-------------|
+| ERR732901_sub | CTR_1  | Control     |
+| ERR732901_sub | TGF_1  | TGF_Treated |
+| ...       | ...    | ...         |
 
 ### Using sharc (**UoS-specific**)
 
