@@ -49,6 +49,9 @@ We will need the Human reference genome sequence for chromosome 22 from the DNA 
 
 </div>
 
+
+### More recommendations on downloading reference data
+
 <div class="information">
 *To avoid duplication. check first (with I.T or local Bioinformaticians) that you don't have a local copy of reference genomes on your file system*
 </div>
@@ -334,7 +337,7 @@ If you are using a HPC environment you will probably want to keep the singularit
 
 <div class="exercise">
 **Exercise**
-There are two fastq files in our `fastq` folder that have not yet been analysed; `ERR732908` and `ERR732909`. Use the `nano` editor to modify the samplesheet `nf_samplesheet.csv` to include `ERR732908`, and re-run the pipeline. What do you notice about the time taken to run the pipeline?
+There are two fastq files in our `fastq` folder that have not yet been analysed; `ERR732908` and `ERR732909`. Make a copy of the samplesheet `nf_samnplesheet.csv` and use the `nano` editor to modify the new samplesheet to include `ERR732908`. Now edit the run script to use this new samplesheet and re-run the pipeline. What do you notice about the time taken to run the pipeline?
 </div>
 
 
