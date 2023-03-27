@@ -230,7 +230,7 @@ If the identifier is recognised the names of samples belonging to the dataset wi
 For this particular dataset we created a download script using the links provided by SRA explorer. To keep the run-time of the workshop short (and to keep computing requirements down), each raw file was subset to a more manageable amount.
 
 <div class="information">
-The code used to download the example dataset can be found in `/data/scripts/download_subset.sh`. You do not need to run this as part of the workshop - it is just for information, or if you wanted to repeat the workshop in your own environment.
+The code used to download the example dataset can be found in `/home/dcuser/rnaseq_data/scripts/download_subset.sh`. You do not need to run this as part of the workshop - it is just for information, or if you wanted to repeat the workshop in your own environment.
 </div>
 
 ### Using sharc (**UoS-specific**)
