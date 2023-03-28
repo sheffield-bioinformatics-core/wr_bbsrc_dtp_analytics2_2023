@@ -363,23 +363,17 @@ overflow-y: auto;
 border: 1px solid #ddd;
 border-radius: 4px;
 }
-.tabset-dropdown > .nav-tabs > li.active:before {
-content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+content: "\e259";
 font-family: 'Glyphicons Halflings';
 display: inline-block;
 padding: 10px;
 border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-content: "";
-border: none;
-}
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-content: "";
+content: "\e258";
 font-family: 'Glyphicons Halflings';
-display: inline-block;
-padding: 10px;
-border-right: 1px solid #ddd;
+border: none;
 }
 .tabset-dropdown > .nav-tabs > li.active {
 display: block;
@@ -469,9 +463,9 @@ Setup</a></li>
 <li>10:45 - 12:00 <a href="https://datacarpentry.org/shell-genomics/01-introduction/">Introduction
 to the command line</a></li>
 <li>12:45 - 13:45 Introduction to command line (continued)</li>
-<li>13:45 - 14:30 <a href>Obtaining Sequencing data and quality
-assessment</a></li>
-<li>15:15 - end Workflows and pipelines</li>
+<li>13:45 - 14:30 <a href="part2.nb.html">Obtaining Sequencing data and
+quality assessment</a></li>
+<li>15:15 - end <a href="part3.nb.html">Workflows and pipelines</a></li>
 </ul>
 </div>
 <div id="unix-cheatsheet" class="section level2">

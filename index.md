@@ -37,8 +37,8 @@ After this course you should be able to:
 - 10:15 - 10:45 [Introduction and Course Setup](part0.nb.html)
 - 10:45 - 12:00 [Introduction to the command line](https://datacarpentry.org/shell-genomics/01-introduction/)
 - 12:45 - 13:45 Introduction to command line (continued)
-- 13:45 - 14:30 [Obtaining Sequencing data and quality assessment]()
-- 15:15 - end Workflows and pipelines
+- 13:45 - 14:30 [Obtaining Sequencing data and quality assessment](part2.nb.html)
+- 15:15 - end [Workflows and pipelines](part3.nb.html)
 
 ## Unix "cheatsheet"
 
