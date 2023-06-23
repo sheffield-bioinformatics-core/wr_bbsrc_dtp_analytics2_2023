@@ -295,7 +295,7 @@ cat nf_samplesheet.csv
 Before we can run the pipeline we need to move (or copy) the script to the working folder
 
 ```{bash}
-cp scripts/run_nextflow.sh /data
+cp scripts/run_nextflow.sh /home/dcuser/rnaseq_data/
 bash run_nextflow.sh
 ```
 
